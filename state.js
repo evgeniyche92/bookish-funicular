@@ -1,7 +1,7 @@
-import {rerenderEntireTree} from "../render";
 
-let state = {
-    mainPage: {
+let store = {
+    _state:{
+        mainPage: {
         friend: [
             {id: 1, name: 'Ivan'},
             {id: 2, name: 'Mikhail'},
@@ -16,9 +16,8 @@ let state = {
             {id: 3, message: 'I want to be a fullstack developer (React JS & Node JS)', like: '34'},
             {id: 4, message: 'I want to be a developer', like: '45'}
         ],
-newPostText:' ',
+        newPostText:' ',
     },
-
     messagePage: {
         messages: [
             {id: 1, message: 'STATE !!!!'},
@@ -41,7 +40,6 @@ newPostText:' ',
             {id: 7, name: 'Gena'},
             {id: 8, name: 'Mira'}]
     },
-
     newsPage: {
         news: [
             {id: 1, news: 'Hi'},
@@ -58,33 +56,43 @@ newPostText:' ',
     },
     musicPage: {},
     settingsPage: {},
+},
+    getState(){
 
+        return this._state;
+    },
+    addPosts (){
+        let newPost = {
+            id: 5,
+            message: this._state.mainPage.newPostText,
+            like: 0,
+        };
+        this._state.mainPage.postData.push(newPost);
+        this._callSubscriber(this._state);
+    },
+    _callSubscriber (){
+        console.log('State was changed');
+    },
+    sendMessage  () {
+        let newMessage = {
+            id: 10,
+            messages: this._state.messagePage.messages,
+        };
+
+        this._state.messagePage.messages.push(newMessage);
+        this._callSubscriber(this._state);
+    },
+    updateTextPost  (newText) {
+        debugger;
+        this._state.mainPage.newPostText = newText;
+
+        this._callSubscriber(this._state);
+
+    },
+    subscribe (observer){
+        this._callSubscriber=observer;
+    }
 }
-window.state=state;
+window.store=store;
+export default store;
 
-export let addPosts = (postMessage) => {
-    let newPost = {
-        id: 5,
-        message: postMessage,
-        like: 0,
-    };
-    state.mainPage.postData.push(newPost);
-    rerenderEntireTree(state);
-}
-
-export let sendMessage = (send) => {
-    let newMessage = {
-        id: 10,
-        messages: send,
-    };
-    state.messagePage.messages.push(newMessage);
-    rerenderEntireTree(state);
-}
-
-export let updateTextPost = (newText) => {
-    state.mainPage.newPostText = newText;
-
-    rerenderEntireTree(state);
-
-}
-export default state;
